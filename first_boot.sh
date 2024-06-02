@@ -121,6 +121,7 @@ sudo apt install -y ./sunshine-ubuntu-22.04-amd64.deb
 rm -f ./sunshine-ubuntu-22.04-amd64.deb
 sudo patch /usr/lib/systemd/user/sunshine.service < /opt/sunshine_systemd_user_service.patch
 sudo machinectl shell sunshine@ /home/sunshine/enable_sunshine_services.sh
+echo "sunshine ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/sunshine
 
 # sudo su -c "desktop-file-install --dir=/home/sunshine/.config/autostart /usr/local/share/applications/restore.desktop" sunshine
 wget https://github.com/lutris/lutris/releases/download/v0.5.17/lutris_0.5.17_all.deb
