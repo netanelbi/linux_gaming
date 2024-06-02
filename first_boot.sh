@@ -129,3 +129,7 @@ sudo apt install -y ./lutris_0.5.17_all.deb
 rm -f ./lutris_0.5.17_all.deb
 sudo apt install -y wine64 wine32 libasound2-plugins:i386 libsdl2-2.0-0:i386 libdbus-1-3:i386 libsqlite3-0:i386
 sudo snap install chromium
+
+sudo /opt/install_nvidia_driver.sh
+
+sudo reboot
