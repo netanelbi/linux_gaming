@@ -92,6 +92,15 @@ ExecStart = chown sunshine:sunshine /mnt/sunshine
 WantedBy = multi-user.target
 EOF
 
+cat <<EOF | sudo tee /home/sunshine/enable_sunshine_services.sh
+#!/bin/bash
+systemctl --user enable sunshine
+systemctl --user enable init_desktop_settings
+EOF
+sudo chmod +x /home/sunshine/enable_sunshine_services.sh
+sudo chown sunshine:sunshine /home/sunshine/enable_sunshine_services.sh
+
+
 cat <<EOF | sudo tee /usr/lib/systemd/user/init_desktop_settings.service
 [Unit]
 Description=Init desktop settings
@@ -111,14 +120,6 @@ wget https://github.com/LizardByte/Sunshine/releases/download/v0.23.1/sunshine-u
 sudo apt install -y ./sunshine-ubuntu-22.04-amd64.deb
 rm -f ./sunshine-ubuntu-22.04-amd64.deb
 sudo patch /usr/lib/systemd/user/sunshine.service < /opt/sunshine_systemd_user_service.patch
-
-cat <<EOF | sudo tee /home/sunshine/enable_sunshine_services.sh
-#!/bin/bash
-systemctl --user enable sunshine
-systemctl --user enable init_desktop_settings
-EOF
-sudo chmod +x /home/sunshine/enable_sunshine_services.sh
-sudo chown sunshine:sunshine /home/sunshine/enable_sunshine_services.sh
 sudo machinectl shell sunshine@ /home/sunshine/enable_sunshine_services.sh
 
 # sudo su -c "desktop-file-install --dir=/home/sunshine/.config/autostart /usr/local/share/applications/restore.desktop" sunshine
