@@ -12,6 +12,7 @@ sudo apt install -y adwaita-icon-theme-full alsa-utils awscli baobab build-essen
 
 # sudo mkfs.ext4 /dev/sdb
 # sudo mkdir -p /mnt
+# sudo chown -R sunshine:sunshine /mnt
 # sudo mount /dev/sdb /mnt
 # echo "/dev/sdb /mnt ext4 defaults,nofail 0 2" | sudo tee -a /etc/fstab
 
