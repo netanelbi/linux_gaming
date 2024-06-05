@@ -129,6 +129,68 @@ wget https://github.com/lutris/lutris/releases/download/v0.5.17/lutris_0.5.17_al
 sudo apt install -y ./lutris_0.5.17_all.deb
 rm -f ./lutris_0.5.17_all.deb
 sudo apt install -y wine64 wine32 libasound2-plugins:i386 libsdl2-2.0-0:i386 libdbus-1-3:i386 libsqlite3-0:i386
+
+
+#!/bin/bash
+
+# Variables
+DOMAIN="beniluz.xyz"
+HOST="vm"
+PASSWORD="e8cb9c47a6d04a41b186f0bd5882ce9d"
+DNS_UPDATE_SCRIPT="/opt/update_namecheap_dns.sh"
+SYSTEMD_SERVICE="/etc/systemd/system/update-dns.service"
+
+# Install necessary dependencies
+sudo apt-get update
+sudo apt-get install -y curl
+
+# Create the DNS update script
+cat << EOF | sudo tee $DNS_UPDATE_SCRIPT
+#!/bin/bash
+
+# Get the external IP address
+EXTERNAL_IP=\$(curl -s http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip -H "Metadata-Flavor: Google")
+
+# Update Namecheap DNS record
+RESPONSE=\$(curl -s "https://dynamicdns.park-your-domain.com/update?host=${HOST}&domain=${DOMAIN}&password=${PASSWORD}&ip=\${EXTERNAL_IP}")
+
+# Check response and echo result
+if [[ \$RESPONSE == *"success"* ]]; then
+  echo "DNS update successful: \${EXTERNAL_IP} set for ${HOST}.${DOMAIN}"
+else
+  echo "DNS update failed: \$RESPONSE"
+fi
+EOF
+
+# Make the DNS update script executable
+sudo chmod +x $DNS_UPDATE_SCRIPT
+
+# Create the systemd service unit file
+cat << EOF | sudo tee $SYSTEMD_SERVICE
+[Unit]
+Description=Update Namecheap DNS record on VM boot
+
+[Service]
+ExecStart=$DNS_UPDATE_SCRIPT
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# Reload the systemd daemon to recognize the new service
+sudo systemctl daemon-reload
+
+# Enable the service so it runs on boot
+sudo systemctl enable update-dns.service
+
+# Start the service to test it
+sudo systemctl start update-dns.service
+
+# Confirm service status
+sudo systemctl status update-dns.service
+
+
 sudo snap install chromium
 
 sudo /opt/install_nvidia_driver.sh
