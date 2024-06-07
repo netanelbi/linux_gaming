@@ -15,6 +15,6 @@ gcloud compute instances attach-disk $VM_NAME --disk=$DISK_NAME --zone=$ZONE
 
 # Optionally, resize the filesystem on the new disk (assuming ext4 and /dev/sdb)
 # Mount the disk and resize the filesystem
-sudo mkdir -p /mnt
-sudo mount /dev/sdb /mnt
+sudo mkdir -p /mnt/$DISK_NAME
+sudo mount /dev/sdb /mnt/$DISK_NAME
 sudo resize2fs /dev/sdb
