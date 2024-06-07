@@ -9,7 +9,7 @@ ZONE="me-west1-c"  # Replace with your GCP zone
 DISK_TYPE="pd-balanced"  # Change to pd-standard or pd-balanced if needed
 
 # Create a new smaller disk from the snapshot
-gcloud compute disks create $DISK_NAME --source-snapshot=$SNAPSHOT_NAME --size=$DISK_SIZE --zone=$ZONE
+gcloud compute disks create $DISK_NAME --source-snapshot=$SNAPSHOT_NAME --size=$DISK_SIZE --type=$DISK_TYPE --zone=$ZONE
 
 # Attach the new smaller disk to the VM
 gcloud compute instances attach-disk $VM_NAME --disk=$DISK_NAME --zone=$ZONE
